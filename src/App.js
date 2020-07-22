@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Axios from 'axios';
 
-import '../App.css';
-import Home from './Home';
-import Dashboard from './Dashboard';
+import './App.css';
+import Home from './components/Home';
+import Dashboard from './components/Dashboard';
 
 class App extends Component {
   constructor() {
