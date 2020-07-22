@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Axios from 'axios';
 
 import '../App.css';
 import Home from './Home';
@@ -15,6 +16,43 @@ class App extends Component {
     }
     
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+  }
+
+  checkLoginStatus() {
+    Axios.get("http://localhost:3000/logged_in", { withCredentials: true })
+      .then(response => {
+        if (
+          response.data.logged_in && this.state.loggedInStatus === "NOT_LOGGED_IN"
+        ) {
+          this.setState({
+            loggedInStatus: "LOGGED_IN",
+            user: response.data.user
+          });
+        } else if (
+          !response.data.logged_in &
+          (this.state.loggedInStatus === "LOGGED_IN")
+        ) {
+          this.setState({
+            loggedInStatus: "NOT_LOGGED_IN",
+            user: {}
+          });
+        }
+      })
+      .catch(error => {
+        console.log("check login error", error);
+      });
+  }
+
+  componentDidMount() {
+    this.checkLoginStatus();
+  }
+
+  handleLogout() {
+    this.setState({
+      loggedInStatus: "NOT_LOGGED_IN",
+      user: {}
+    })
   }
 
   handleLogin(data) {
@@ -33,14 +71,22 @@ class App extends Component {
             exact 
             path={ "/" }
             render={props => (
-              <Home {...props} handleLogin={this.handleLogin}  loggedInStatus={this.state.loggedInStatus} />
+              <Home 
+                {...props} 
+                handleLogin={this.handleLogin}
+                handleLogout={this.handleLogout}
+                loggedInStatus={this.state.loggedInStatus}
+              />
             )}
           />
           <Route 
             exact
             path={ "/dashboard" }
             render={props => (
-              <Dashboard {...props} loggedInStatus={this.state.loggedInStatus} />
+              <Dashboard 
+                {...props} 
+                loggedInStatus={this.state.loggedInStatus}
+              />
             )}
             />
         </Switch>
