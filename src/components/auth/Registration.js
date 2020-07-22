@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import Axios from 'axios'
 
-class registrations extends Component {
+class Registration extends Component {
     constructor(props) {
         super(props);
 
@@ -17,7 +18,26 @@ class registrations extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("form submitted");
+
+        const {
+            email,
+            password,
+            password_confirmation
+        } = this.state;
+
+        Axios.post("http://localhost:3000/registrations", {
+            user: {
+                email: email,
+                password: password,
+                password_confirmation: password_confirmation
+            }
+        },
+        { withCredentials: true }
+        ).then(response => {
+            console.log("registration resp", response);
+        }).catch(error => {
+            console.log("registration error", error);
+        })
     }
 
     handleChange(event) {
@@ -61,4 +81,4 @@ class registrations extends Component {
     }
 }
 
-export default registrations;
+export default Registration;
